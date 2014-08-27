@@ -338,7 +338,9 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     NSParameterAssert(delegate);
 
     [self.lock lock];
-    [task addObserver:self forKeyPath:NSStringFromSelector(@selector(state)) options:NSKeyValueObservingOptionOld |NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
+
+    // LL: Commented this out for KVO Leak fix.
+    // [task addObserver:self forKeyPath:NSStringFromSelector(@selector(state)) options:NSKeyValueObservingOptionOld |NSKeyValueObservingOptionNew context:AFTaskStateChangedContext];
     self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)] = delegate;
     [self.lock unlock];
 }
@@ -412,7 +414,10 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     NSParameterAssert(task);
 
     [self.lock lock];
-    [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:AFTaskStateChangedContext];
+
+    // LL: Commented this out for KVO Leak fix.
+    // [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:AFTaskStateChangedContext];
+
     [self.mutableTaskDelegatesKeyedByTaskIdentifier removeObjectForKey:@(task.taskIdentifier)];
     [self.lock unlock];
 }
@@ -707,7 +712,10 @@ didBecomeInvalidWithError:(NSError *)error
     [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
         NSArray *tasks = [@[dataTasks, uploadTasks, downloadTasks] valueForKeyPath:@"@unionOfArrays.self"];
         for (NSURLSessionTask *task in tasks) {
-            [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:AFTaskStateChangedContext];
+
+            // LL: Commented this out for KVO Leak fix.
+            // [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:AFTaskStateChangedContext];
+
         }
 
         [self removeAllDelegates];
