@@ -422,7 +422,7 @@ expectedTotalBytes:(int64_t)expectedTotalBytes {
     NSParameterAssert(task);
 
 	// LL: Commented this out for KVO Leak fix.
-    [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:AFTaskStateChangedContext];
+    // [task removeObserver:self forKeyPath:NSStringFromSelector(@selector(state)) context:AFTaskStateChangedContext];
     [self.lock lock];
     [self.mutableTaskDelegatesKeyedByTaskIdentifier removeObjectForKey:@(task.taskIdentifier)];
     [self.lock unlock];
